@@ -1,8 +1,8 @@
 namespace CapitalGuesser.Client.Models
 {
-    public sealed class Capitals
+    public static class Capitals
     {
-        public Dictionary<string, string> CapitalsAndCities { get; } = new Dictionary<string, string>
+        public static Dictionary<string, string> CapitalsAndCities { get; } = new Dictionary<string, string>
         {
             {"Afghanistan","Kabul"},
 {"Albania","Tirana"},

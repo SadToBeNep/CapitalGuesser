@@ -1,3 +1,99 @@
-﻿@page "/"
+﻿@using CapitalGuesser.Client.Models;
 
-<h1>Hello, world!</h1>
+@page "/"
+
+
+<div class="root">
+    <div class="city-container">
+        @foreach(var button in Buttons)
+        {
+            if(button.isVisible && button.isClicked)
+            {
+            <button class="clicked" type="button" @onclick="() => ButtonClickController(true, button.city,button.id)">@button.city</button>
+            }
+            if(button.isVisible)
+            {
+            <button type="button" @onclick="() => ButtonClickController(true, button.city,button.id)">@button.city</button>
+            }
+        }
+    </div>
+
+    <div class="country-container">
+        @foreach(var button in Buttons)
+        {
+            if(button.isVisible == true)
+            {
+            <button type="button" class="country-button" @onclick="() => ButtonClickController(false,button.capital,button.id)">@button.capital</button>
+            }
+            
+        }
+    </div>
+</div>
+
+
+@code
+{
+    [Parameter]
+    public int? NUMBER{get;set;} = 5;
+    private readonly Random rand = new();
+
+    [Parameter]
+    public int currentlyActiveButtons{get;set;} = 0;
+    public int currentlySelectedCountry = 0;
+    public int currentlySelectedCity = 0;
+    private int randomNumber = 0;
+    public Dictionary<string,string> Pairs = new Dictionary<string,string>();
+    
+    public List<ButtonModel> Buttons = new();
+    public void ChooseRandomCountries()
+    {
+        Console.WriteLine("XXXXXXXXX");
+        for(int x=0;x<=NUMBER-1;x++)
+        {
+            randomNumber = rand.Next(0,Capitals.CapitalsAndCities.Count-1);
+            Pairs.Add(Capitals.CapitalsAndCities.ElementAt(randomNumber).Key,Capitals.CapitalsAndCities.ElementAt(randomNumber).Value);
+            Console.WriteLine(Capitals.CapitalsAndCities.ElementAt(randomNumber).Key);
+            Buttons.Add(new ButtonModel
+            {
+                id = x,
+                city = Capitals.CapitalsAndCities.ElementAt(x).Value,
+                capital = Capitals.CapitalsAndCities.ElementAt(x).Key
+
+            });
+
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        ChooseRandomCountries();
+        
+    }
+
+    public void ButtonClickController(bool isCity, string text, int buttonID)
+    {
+        Console.WriteLine(Buttons.FirstOrDefault(x=>x.id == buttonID).isVisible);
+        Buttons.FirstOrDefault(x=>x.id==buttonID).isClicked = true;
+        if(isCity){currentlySelectedCity=buttonID;}
+        else{currentlySelectedCountry=buttonID;}
+        currentlyActiveButtons+=1;
+        if(currentlyActiveButtons == 2)
+        {
+            if(currentlySelectedCity == currentlySelectedCountry) {Buttons.FirstOrDefault(x=> x.id == currentlySelectedCity).isVisible=false;}
+            Console.Write($"{buttonID} is set to invisible");
+            currentlyActiveButtons = 0;
+            currentlySelectedCity = 0;
+            currentlySelectedCountry = 0;
+            foreach(var button in Buttons)
+            {
+                button.isClicked = false;
+            }
+
+        }
+        StateHasChanged();
+        
+
+
+    }
+    
+}
