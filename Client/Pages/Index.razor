@@ -11,6 +11,10 @@
             {
             <button class="clicked" type="button" @onclick="() => ButtonClickController(true, button.city,button.id)">@button.city</button>
             }
+            if(button.isVisible && button.wasWrong)
+            {
+            <button class="wrong" type="button" @onclick="() => ButtonClickController(true, button.city,button.id)">@button.city</button>
+            }
             if(button.isVisible)
             {
             <button type="button" @onclick="() => ButtonClickController(true, button.city,button.id)">@button.city</button>
@@ -34,7 +38,7 @@
 @code
 {
     [Parameter]
-    public int? NUMBER{get;set;} = 5;
+    public int? NUMBER{get;set;} = 10;
     private readonly Random rand = new();
 
     [Parameter]
@@ -80,6 +84,7 @@
         if(currentlyActiveButtons == 2)
         {
             if(currentlySelectedCity == currentlySelectedCountry) {Buttons.FirstOrDefault(x=> x.id == currentlySelectedCity).isVisible=false;}
+            if(currentlySelectedCity != currentlySelectedCountry) {Buttons.FirstOrDefault(x=> x.id == currentlySelectedCity).wasWrong=true;Buttons.FirstOrDefault(x=> x.id == currentlySelectedCountry).wasWrong=true;}
             Console.Write($"{buttonID} is set to invisible");
             currentlyActiveButtons = 0;
             currentlySelectedCity = 0;
